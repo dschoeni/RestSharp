@@ -22,7 +22,10 @@ using System.Net;
 using System.Xml;
 using System.Xml.Linq;
 using RestSharp.Deserializers;
+
+#if !SILVERLIGHT
 using System.ServiceModel.Syndication;
+
 
 namespace RestSharp
 {
@@ -45,7 +48,7 @@ namespace RestSharp
 			AddHandler("text/xml", new XmlDeserializer());
 			AddHandler("*", new XmlDeserializer());
 
-			UserAgent = string.Concat("RestSharp ", System.Reflection.Assembly.GetExecutingAssembly().GetName().Version);
+			UserAgent = "RestSharp Release 1";
 		}
 
 		/// <summary>
@@ -349,3 +352,4 @@ namespace RestSharp
 		}
 	}
 }
+#endif
