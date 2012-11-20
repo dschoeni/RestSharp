@@ -295,7 +295,6 @@ namespace RestSharp.Authenticators.OAuth
             {
                 case OAuthSignatureMethod.HmacSha1:
                     {
-                        //TODO:Brian was here
                         var key = "{0}&{1}".FormatWith(consumerSecret, tokenSecret);
                         var keyMaterial = CryptographicBuffer.ConvertStringToBinary(key, BinaryStringEncoding.Utf8);
                         var hmacSha1Provider = MacAlgorithmProvider.OpenAlgorithm("HMAC_SHA1");
