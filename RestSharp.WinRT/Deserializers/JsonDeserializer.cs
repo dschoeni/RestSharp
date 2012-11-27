@@ -21,7 +21,8 @@ namespace RestSharp.Deserializers
 
         public object Deserialize(IRestResponse response, Type type)
         {
-            var methodInfo = this.GetType().GetRuntimeMethod("Deserialize", new Type[] { typeof(IRestResponse)} );
+            //Note: I think using GetRuntimeMethod here doesnt work because it only finds public members, so we have to be more brute force
+            var methodInfo = this.GetType().GetTypeInfo().DeclaredMethods.Where(m => m.Name == "Deserialize" && m.IsGenericMethod).FirstOrDefault();
             var genericMethod = methodInfo.MakeGenericMethod(type);
             var result = genericMethod.Invoke(this, new object[] { response });
 
