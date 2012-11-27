@@ -6,6 +6,7 @@ using System.Linq;
 using System.Reflection;
 using RestSharp.Extensions;
 using RestSharp;
+using System.Text;
 
 namespace RestSharp.Deserializers
 {
@@ -119,6 +120,24 @@ namespace RestSharp.Deserializers
 
 		private IList BuildList(Type type, object parent)
 		{
+            //HACK: if this is an interface, then default to its concrete implementation
+            if (type.GetTypeInfo().IsInterface)            
+            {
+                if (type.Name.StartsWith("I"))
+                {
+                    var name = type.Name.Substring(1); //strip the 'I'
+
+                    var newtype = Type.GetType(type.Namespace + "." + name);
+
+                    if (type.GetTypeInfo().IsGenericType)
+                    {
+                        newtype = newtype.MakeGenericType(type.GenericTypeArguments);
+                    }
+
+                    type = newtype;
+                }
+            }
+
 			var list = (IList)Activator.CreateInstance(type);
 			//var listType = type.GetInterfaces().First(x => x.IsGenericType && x.GetGenericTypeDefinition() == typeof(IList<>));
             //var itemType = listType.GetGenericArguments()[0];
@@ -228,7 +247,7 @@ namespace RestSharp.Deserializers
             else if (System.Reflection.IntrospectionExtensions.GetTypeInfo(type).IsGenericType)
 			{
 				var genericTypeDef = type.GetGenericTypeDefinition();
-				if (genericTypeDef == typeof(List<>))
+				if (genericTypeDef == typeof(IList<>))
 				{
 					return BuildList(type, value);
 				}
