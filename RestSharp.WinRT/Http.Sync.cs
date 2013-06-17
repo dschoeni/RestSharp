@@ -179,7 +179,8 @@ namespace RestSharp
             }
             else
             {
-               httpContent = new FormUrlEncodedContent(EncodeParameters());
+                httpContent = new StringContent(RequestBody);
+               //httpContent = new FormUrlEncodedContent(EncodeParameters());
             }
 
             httpRequestMessage.Content = httpContent;
